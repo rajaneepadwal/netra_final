@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- ========================= -->
+    <!-- Existing Bluetooth UI -->
+    <!-- ========================= -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/black"
+        android:paddingTop="20dp">
+
+        <!-- Title -->
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:background="@android:color/black"
+            android:elevation="5dp"
+            android:padding="18dp"
+            android:text="Available Devices"
+            android:textAlignment="center"
+            android:textColor="#21808D"
+            android:textSize="26sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvTitle"
+            android:text="Not Connected"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#082959"
+            android:padding="10dp"
+            android:gravity="center"
+            android:background="#7fd6f5"
+            android:visibility="visible" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyleSmall"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_below="@id/tvStatus"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="8dp"
+            android:indeterminate="true"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/scanningText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/progressBar"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="4dp"
+            android:text="Scanning..."
+            android:textSize="12sp"
+            android:textColor="#626C71"
+            android:visibility="gone" />
+
+        <ListView
+            android:id="@+id/listViewDevices"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/scanningText"
+            android:layout_above="@id/btnBack"
+            android:layout_marginVertical="8dp"
+            android:divider="#595959"
+            android:dividerHeight="0.5dp"
+            android:padding="8dp" />
+
+        <!-- Back button -->
+        <ImageButton
+            android:id="@+id/btnBack"
+            android:layout_width="70dp"
+            android:layout_height="48dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="25dp"
+            android:layout_marginBottom="32dp"
+            android:background="@null"
+            android:contentDescription="Back"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_back" />
+
+        <!-- Refresh button -->
+        <ImageButton
+            android:id="@+id/btnRefresh"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="16dp"
+            android:background="@null"
+            android:contentDescription="Refresh"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_magnifier" />
+
+    </RelativeLayout>
+    <!--doraemon-->
+        <include
+        android:id="@+id/progressOverlay"
+        layout="@layout/progress"
+        android:visibility="gone" />
+
+</FrameLayout>

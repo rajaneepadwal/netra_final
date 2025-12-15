@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="1dp"
+    android:background="@android:color/black">
+
+    <ImageView
+        android:id="@+id/imgBluetooth"
+        android:layout_width="50dp"
+        android:layout_height="40dp"
+        android:src="@drawable/ic_bluetooth"
+        android:scaleType="centerInside"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <TextView
+        android:id="@+id/tvDeviceLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:minHeight="?android:attr/listPreferredItemHeightSmall"
+        android:text="Device Name"
+        android:textSize="22sp"
+        android:textColor="@android:color/white"
+        android:fontFamily="@font/oxanium_light"
+        app:layout_constraintStart_toEndOf="@id/imgBluetooth"
+        app:layout_constraintEnd_toStartOf="@id/btnConnect"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginEnd="4dp" />
+
+    <Button
+        android:id="@+id/btnConnect"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:minWidth="120dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:text="Connect"
+        android:textSize="17sp"
+        android:textColor="@android:color/white"
+        android:fontFamily="@font/oxanium_semibold"
+        android:backgroundTint="#21808D"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginEnd="4dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

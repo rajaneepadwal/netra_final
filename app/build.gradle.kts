@@ -16,11 +16,15 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        ndk {
+            abiFilters += listOf("armeabi-v7a", "arm64-v8a")
+        }
     }
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -67,9 +71,13 @@ dependencies {
         implementation("com.google.android.material:material:1.11.0")
 
         // ===== OPENCV FOR COMPUTER VISION =====
-        implementation("com.quickbirdstudios:opencv:4.5.3.0")
+        implementation("org.opencv:opencv:4.9.0")
+    // for accessing https
+        implementation ("com.squareup.okhttp3:okhttp:4.12.0")
 
-        // ===== ML KIT FOR FACE DETECTION (Pre-trained Google Model) =====
+
+
+    // ===== ML KIT FOR FACE DETECTION (Pre-trained Google Model) =====
         implementation("com.google.mlkit:face-detection:16.1.6")
 
         // ===== CAMERAX FOR CAMERA ACCESS =====
@@ -78,11 +86,12 @@ dependencies {
         implementation("androidx.camera:camera-view:1.3.1")
 
         // ===== TENSORFLOW LITE (For Future Custom Models) =====
-//        implementation("org.tensorflow:tensorflow-lite:2.14.0")
-//        implementation("org.tensorflow:tensorflow-lite-support:0.4.4")
-//        implementation("org.tensorflow:tensorflow-lite-gpu:2.14.0")
+        implementation("org.tensorflow:tensorflow-lite:2.14.0")
+        implementation("org.tensorflow:tensorflow-lite-support:0.4.4")
+        implementation("org.tensorflow:tensorflow-lite-gpu:2.14.0")
         //==for joystick==
-    implementation("com.github.Krusshnaa:Joystick_Lib:1.0")
+        implementation("com.github.Krusshnaa:Joystick_Lib:1.0")
+        implementation("com.airbnb.android:lottie:6.4.0")
 
         // ===== TESTING =====
         testImplementation(libs.junit)
@@ -92,7 +101,7 @@ dependencies {
         androidTestImplementation(libs.androidx.ui.test.junit4)
         debugImplementation(libs.androidx.ui.tooling)
         debugImplementation(libs.androidx.ui.test.manifest)
-        implementation("androidx.appcompat:appcompat:1.7.1")
-    }
+
+}
 
 

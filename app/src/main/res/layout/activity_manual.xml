@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:backgroundTint="#1B8D9F"
+        android:backgroundTint="#ac1B8D9F"
         android:text="← Back"
         android:textColor="#FFFFFF"
         app:cornerRadius="10dp"
@@ -24,17 +24,17 @@
         android:id="@+id/joystick_Lib"
         android:layout_width="222dp"
         android:layout_height="226dp"
-        android:layout_marginStart="32dp"
-        app:JV_backgroundColor="#1B8D9F"
+        android:layout_marginStart="76dp"
         app:JV_backgroundSizeRatio="75%"
         app:JV_borderColor="#FFFFFF"
         app:JV_borderWidth="4dp"
         app:JV_buttonColor="#FFFFFF"
-        app:JV_buttonSizeRatio="25%"
+        app:JV_buttonSizeRatio="20%"
         app:JV_fixedCenter="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.497" />
 
     <Button
         android:id="@+id/btnGrip"
@@ -42,7 +42,7 @@
         android:layout_height="60dp"
         android:layout_marginStart="16dp"
         android:layout_marginBottom="4dp"
-        android:backgroundTint="#1B8D9F"
+        android:backgroundTint="#aC1B8D9F"
         android:text="GRIP"
         android:textColor="#FFFFFF"
         app:cornerRadius="12dp"
@@ -62,6 +62,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <ToggleButton
+        android:id="@+id/toggleTilt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="284dp"
+        android:backgroundTint="#1B8D9F"
+        android:textColor="#FFFFFF"
+        android:textOff="Tilt OFF"
+        android:textOn="Tilt ON"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.499"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txtStatus" />
+
     <TextView
         android:id="@+id/txtFunc"
         android:layout_width="wrap_content"
@@ -76,12 +90,13 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.461" />
 
+
     <Button
         android:id="@+id/btnReconnect"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:backgroundTint="#1B8D9F"
+        android:backgroundTint="#aC1B8D9F"
         android:text="⟳ Reconnect"
         android:textColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
@@ -93,39 +108,41 @@
         android:layout_width="70dp"
         android:layout_height="55dp"
         android:layout_marginEnd="84dp"
-        android:backgroundTint="#1B8D9F"
+        android:backgroundTint="#161E37"
         android:text="□"
-        android:textColor="#FFFFFF"
+        android:textColor="#0046FF"
         android:textSize="25sp"
         app:cornerRadius="12dp"
         app:layout_constraintBottom_toBottomOf="@+id/btnCircle"
         app:layout_constraintEnd_toStartOf="@+id/btnCircle"
         app:layout_constraintTop_toTopOf="@+id/btnCircle"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="1.0" />
 
     <Button
         android:id="@+id/btnTriangle"
         android:layout_width="70dp"
         android:layout_height="55dp"
-        android:layout_marginBottom="24dp"
-        android:backgroundTint="#1B8D9F"
+        android:layout_marginBottom="28dp"
+        android:backgroundTint="#161E37"
         android:text="△"
         android:textAlignment="center"
-        android:textColor="#FFFFFF"
-        android:textSize="25sp"
+        android:textColor="#FF0000"
+        android:textSize="27sp"
         app:cornerRadius="12dp"
         app:layout_constraintBottom_toTopOf="@+id/btnCircle"
         app:layout_constraintEnd_toEndOf="@+id/btnCircle"
+        app:layout_constraintHorizontal_bias="0.503"
         app:layout_constraintStart_toStartOf="@+id/btnSquare" />
 
     <Button
         android:id="@+id/btnCircle"
         android:layout_width="70dp"
         android:layout_height="55dp"
-        android:layout_marginEnd="24dp"
-        android:backgroundTint="#1B8D9F"
-        android:text="○"
-        android:textColor="#FFFFFF"
+        android:layout_marginEnd="32dp"
+        android:backgroundTint="#161E37"
+        android:text="◯"
+        android:textAlignment="center"
+        android:textColor="#1CB43B"
         android:textSize="25sp"
         app:cornerRadius="12dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -137,13 +154,14 @@
         android:id="@+id/btnCross"
         android:layout_width="70dp"
         android:layout_height="55dp"
-        android:layout_marginTop="20dp"
-        android:backgroundTint="#1B8D9F"
+        android:layout_marginTop="28dp"
+        android:backgroundTint="#161E37"
         android:text="✕"
-        android:textColor="#FFFFFF"
-        android:textSize="20sp"
+        android:textColor="#DD03FF"
+        android:textSize="25sp"
         app:cornerRadius="12dp"
         app:layout_constraintEnd_toEndOf="@+id/btnCircle"
+        app:layout_constraintHorizontal_bias="0.503"
         app:layout_constraintStart_toStartOf="@+id/btnSquare"
         app:layout_constraintTop_toBottomOf="@+id/btnSquare" />
 
@@ -153,7 +171,7 @@
         android:layout_height="59dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="4dp"
-        android:backgroundTint="#1B8D9F"
+        android:backgroundTint="#aC1B8D9F"
         android:text="UNGRIP"
         android:textColor="#FFFFFF"
         app:cornerRadius="12dp"

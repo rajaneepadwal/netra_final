@@ -22,4 +22,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "Level_1_app"
 include(":app")
- 
+include(":cv")

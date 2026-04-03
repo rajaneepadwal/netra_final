@@ -1,10 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+<!--    <color name="purple_200">#FFBB86FC</color>-->
+<!--    <color name="purple_500">#FF6200EE</color>-->
+<!--    <color name="purple_700">#FF3700B3</color>-->
+<!--    <color name="teal_200">#FF03DAC5</color>-->
+<!--    <color name="teal_700">#FF018786</color>-->
+<!--    <color name="black">#FF000000</color>-->
+<!--    <color name="white">#FFFFFFFF</color>-->
+
+    <!-- Base backgrounds -->
+    <color name="bg_primary">#1B1F24</color>     <!-- Main app background -->
+    <color name="bg_surface">#242A30</color>     <!-- Panels, status bars -->
+
+    <!-- Accent (use sparingly) -->
+    <color name="accent_space">#4FD1FF</color>   <!-- Buttons, highlights -->
+    <color name="accent_space_pressed">#22B8E6</color>
+
+    <!-- Text -->
+    <color name="text_primary">#E6EAF0</color>   <!-- Main text -->
+    <color name="text_secondary">#9AA4AF</color> <!-- Secondary / hint text -->
+
+    <!-- Optional system states -->
+    <color name="state_success">#4CAF50</color>  <!-- Connected -->
+    <color name="state_warning">#FFC107</color>  <!-- Scanning -->
+    <color name="state_error">#FF3B3B</color>    <!-- Disconnected / error -->
+
+
 </resources>

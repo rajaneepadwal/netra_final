@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!-- Full-screen OpenCV camera -->
+    <org.opencv.android.JavaCameraView
+        android:id="@+id/camera_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <!-- Reconnect button: now on the RIGHT at the top -->
+    <Button
+        android:id="@+id/btnReconnect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#905FB8"
+        android:text="⟳ Reconnect"
+        android:padding="10dp"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="30dp"
+        android:visibility="visible"
+        tools:visibility="visible" />
+
+    <!-- Status text: LEFT of reconnect -->
+
+    <!-- Big center text S* -->
+    <TextView
+        android:id="@+id/txtStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/btnReconnect"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="48dp"
+        android:background="#AA000000"
+        android:padding="10dp"
+        android:text="DISCONNECTED"
+        android:textColor="#FF4444"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/txtFunc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="#00000000"
+        android:padding="12dp"
+        android:text="S"
+        android:textColor="#FFFFFF"
+        android:textSize="42sp"
+        android:textStyle="bold" />
+
+    <!-- Lighting controls (unchanged) -->
+    <LinearLayout
+        android:id="@+id/lighting_controls"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_above="@id/btn_reset_color"
+        android:layout_marginBottom="12dp"
+        android:visibility="gone">
+
+        <Button
+            android:id="@+id/btn_good_light"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Good Lighting"
+            android:onClick="onGoodLightingClick"
+            android:layout_marginEnd="12dp" />
+
+        <Button
+            android:id="@+id/btn_bad_light"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Bad Lighting"
+            android:onClick="onBadLightingClick" />
+    </LinearLayout>
+
+    <!-- Reset button at bottom center -->
+    <Button
+        android:id="@+id/btn_reset_color"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Reset Color"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="16dp"
+        android:onClick="onResetClick" />
+
+    <!-- Back button at bottom start -->
+    <Button
+        android:id="@+id/btnBack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="#1B8D9F"
+        android:text="← Back"
+        android:textColor="#FFFFFF"
+        android:textSize="16dp"
+        app:cornerRadius="10dp" />
+
+</RelativeLayout>

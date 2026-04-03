@@ -1,0 +1,17 @@
+{
+  "installationFolder": "C:\\Users\\Rajanee\\StudioProjects\\Netra - Copy\\cv\\build\\intermediates\\prefab_package\\debug\\prefab",
+  "gradlePath": ":cv",
+  "packageInfo": {
+    "packageName": "cv",
+    "packageSchemaVersion": 2,
+    "packageDependencies": [],
+    "modules": [
+      {
+        "moduleName": "opencv_jni_shared",
+        "moduleHeaders": "C:\\Users\\Rajanee\\StudioProjects\\Netra - Copy\\cv\\native\\jni\\include",
+        "moduleExportLibraries": [],
+        "abis": []
+      }
+    ]
+  }
+}

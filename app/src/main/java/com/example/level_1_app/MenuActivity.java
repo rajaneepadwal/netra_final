@@ -1,17 +1,19 @@
 package com.example.level_1_app;
 
-import android.os.Bundle;
-import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toast;
 import android.content.Intent;
+import android.os.Bundle;
+import android.widget.TextView;
+import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 public class MenuActivity extends AppCompatActivity {
 
     private TextView tvDeviceName;
-    private Button btnOption1, btnOption2, btnOption3, btnDisconnect;
+
+    private CardView cardManual, cardColor, cardPerson, cardChatbot, cardGesture;
+    private Button btnDisconnect;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,46 +21,50 @@ public class MenuActivity extends AppCompatActivity {
         setContentView(R.layout.activity_menu);
 
         tvDeviceName = findViewById(R.id.tvDeviceName);
-        btnOption1 = findViewById(R.id.btnOption1);
-        btnOption2 = findViewById(R.id.btnOption2);
-        btnOption3 = findViewById(R.id.btnOption3);
+
+        // Cards (UI buttons)
+        cardManual = findViewById(R.id.cardManual);
+        cardColor = findViewById(R.id.cardColor);
+        cardPerson = findViewById(R.id.cardPerson);
+        cardChatbot = findViewById(R.id.cardChatbot);
+        cardGesture = findViewById(R.id.cardGesture);
+
+        // Bottom button
         btnDisconnect = findViewById(R.id.btnDisconnect);
 
-        // Get connection info from singleton
-        BluetoothConnectionManager mgr = BluetoothConnectionManager.getInstance();
+        // Bluetooth status
+        BluetoothConnectionManager manager = BluetoothConnectionManager.getInstance();
 
-        if (mgr.isConnected() && mgr.getDeviceName() != null) {
-            tvDeviceName.setText("Connected: " + mgr.getDeviceName());
+        if (manager.isConnected() && manager.getDeviceName() != null) {
+            tvDeviceName.setText("Connected: " + manager.getDeviceName());
         } else {
             tvDeviceName.setText("No device connected");
         }
 
-        btnOption1.setOnClickListener(v ->
+        // Click actions
+        cardManual.setOnClickListener(v ->
                 startActivity(new Intent(this, ManualActivity.class)));
 
-        btnOption2.setOnClickListener(v ->
+        cardPerson.setOnClickListener(v ->
                 startActivity(new Intent(this, Person_Following_Activity.class)));
 
-        btnOption3.setOnClickListener(v ->
-                startActivity(new Intent(this, Ocr_Activity.class)));
+        cardColor.setOnClickListener(v ->
+                startActivity(new Intent(this, ColorActivity.class)));
 
+        cardChatbot.setOnClickListener(v ->
+                startActivity(new Intent(this, Chatbot_Activity.class)));
 
+        cardGesture.setOnClickListener(v -> {
+            startActivity(new Intent(this, GestureActivity.class));
+        });
+
+        // Disconnect button
         btnDisconnect.setOnClickListener(v -> {
-            mgr.disconnect();
-            Toast.makeText(this, "Disconnected", Toast.LENGTH_SHORT).show();
+            manager.disconnect();
+            Intent intent = new Intent(MenuActivity.this, BluetoothActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
             finish();
         });
-    }
-
-    private void sendCommand(String cmd) {
-        BluetoothConnectionManager mgr = BluetoothConnectionManager.getInstance();
-        if (!mgr.isConnected()) {
-            Toast.makeText(this, "Not connected", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        boolean ok = mgr.sendData(cmd + "\n");
-        if (!ok) {
-            Toast.makeText(this, "Send failed", Toast.LENGTH_SHORT).show();
-        }
     }
 }

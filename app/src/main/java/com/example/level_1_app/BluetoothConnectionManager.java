@@ -1,16 +1,29 @@
 package com.example.level_1_app;
 
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.UUID;
 
 public class BluetoothConnectionManager {
 
     private static final String TAG = "BT_Manager";
+    private static final String PREFS_NAME = "NetraBluetoothPrefs";
+    private static final String KEY_LAST_DEVICE_ADDRESS = "last_device_address";
+    private static final String KEY_LAST_DEVICE_NAME = "last_device_name";
+
+    // Standard UUID for SPP (Serial Port Profile)
+    private static final UUID SPP_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+
     private static BluetoothConnectionManager instance;
 
     private BluetoothSocket socket;
@@ -55,6 +68,90 @@ public class BluetoothConnectionManager {
         Log.d(TAG, "Connected to " + deviceName + " [" + deviceAddress + "]");
 
         startReadingData();
+    }
+
+    // NEW: Save last connected device to SharedPreferences
+    public void saveLastConnectedDevice(Context context) {
+        if (deviceAddress != null) {
+            SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+            prefs.edit()
+                    .putString(KEY_LAST_DEVICE_ADDRESS, deviceAddress)
+                    .putString(KEY_LAST_DEVICE_NAME, deviceName)
+                    .apply();
+            Log.d(TAG, "Saved last device: " + deviceName + " [" + deviceAddress + "]");
+        }
+    }
+
+    // NEW: Get last connected device address
+    public String getLastDeviceAddress(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        return prefs.getString(KEY_LAST_DEVICE_ADDRESS, null);
+    }
+
+    // NEW: Get last connected device name
+    public String getLastDeviceName(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        return prefs.getString(KEY_LAST_DEVICE_NAME, "Unknown Device");
+    }
+
+    // NEW: Reconnect to last device
+    public void reconnectToLastDevice(Context context, ReconnectCallback callback) {
+        String lastAddress = getLastDeviceAddress(context);
+
+        if (lastAddress == null) {
+            mainHandler.post(() -> callback.onReconnectFailed("No previous device found"));
+            return;
+        }
+
+        Log.d(TAG, "Attempting to reconnect to: " + lastAddress);
+
+        new Thread(() -> {
+            try {
+                BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
+
+                if (btAdapter == null || !btAdapter.isEnabled()) {
+                    mainHandler.post(() -> callback.onReconnectFailed("Bluetooth is disabled"));
+                    return;
+                }
+
+                // Get the remote device
+                BluetoothDevice device = btAdapter.getRemoteDevice(lastAddress);
+
+                // Cancel discovery to improve connection speed
+                if (btAdapter.isDiscovering()) {
+                    btAdapter.cancelDiscovery();
+                }
+
+                // Create socket
+                BluetoothSocket tempSocket = device.createRfcommSocketToServiceRecord(SPP_UUID);
+
+                // Attempt connection (blocking call, ~12 sec timeout)
+                tempSocket.connect();
+
+                // Get streams
+                InputStream tempIn = tempSocket.getInputStream();
+                OutputStream tempOut = tempSocket.getOutputStream();
+
+                // Set connection
+                setConnection(tempSocket, tempIn, tempOut, device.getName(), device.getAddress());
+                saveLastConnectedDevice(context);
+
+                mainHandler.post(() -> callback.onReconnectSuccess());
+                Log.d(TAG, "Reconnection successful");
+
+            } catch (IOException e) {
+                Log.e(TAG, "Reconnection failed: " + e.getMessage(), e);
+                mainHandler.post(() -> callback.onReconnectFailed("Cannot connect to previous device"));
+
+            } catch (IllegalArgumentException e) {
+                Log.e(TAG, "Invalid device address: " + e.getMessage(), e);
+                mainHandler.post(() -> callback.onReconnectFailed("Invalid device address"));
+
+            } catch (SecurityException e) {
+                Log.e(TAG, "Bluetooth permission denied: " + e.getMessage(), e);
+                mainHandler.post(() -> callback.onReconnectFailed("Bluetooth permission denied"));
+            }
+        }).start();
     }
 
     public boolean isConnected() {
@@ -174,24 +271,22 @@ public class BluetoothConnectionManager {
     // ---------------- DISCONNECT ----------------
 
     public synchronized void disconnect() {
-        Log.d(TAG, "Disconnecting");
-
         connected = false;
-        stopReadThread();
 
+        try { if (socket != null) socket.close(); } catch (Exception ignored) {}
         try { if (in != null) in.close(); } catch (Exception ignored) {}
         try { if (out != null) out.close(); } catch (Exception ignored) {}
-        try { if (socket != null) socket.close(); } catch (Exception ignored) {}
 
+        stopReadThread();
+
+        socket = null;
         in = null;
         out = null;
-        socket = null;
         deviceName = null;
         deviceAddress = null;
         dataListener = null;
-
-        Log.d(TAG, "Disconnected");
     }
+
 
     private void handleConnectionLost() {
         connected = false;
@@ -203,10 +298,15 @@ public class BluetoothConnectionManager {
         }
     }
 
-    // ---------------- CALLBACK INTERFACE ----------------
+    // ---------------- CALLBACK INTERFACES ----------------
 
     public interface DataReceivedListener {
         void onDataReceived(String data);
         void onConnectionLost();
+    }
+
+    public interface ReconnectCallback {
+        void onReconnectSuccess();
+        void onReconnectFailed(String errorMessage);
     }
 }

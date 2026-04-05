@@ -3,8 +3,11 @@ package com.example.level_1_app;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.RectF;
+import android.util.Log;
+
 import org.tensorflow.lite.DataType;
 import org.tensorflow.lite.Interpreter;
+import org.tensorflow.lite.gpu.GpuDelegate; //
 import org.tensorflow.lite.support.common.FileUtil;
 import org.tensorflow.lite.support.common.ops.CastOp;
 import org.tensorflow.lite.support.common.ops.NormalizeOp;
@@ -12,13 +15,10 @@ import org.tensorflow.lite.support.image.ImageProcessor;
 import org.tensorflow.lite.support.image.TensorImage;
 import org.tensorflow.lite.support.image.ops.ResizeOp;
 import org.tensorflow.lite.support.tensorbuffer.TensorBuffer;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+
+import java.io.*;
 import java.nio.MappedByteBuffer;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class ObjectDetector {
 
@@ -36,62 +36,66 @@ public class ObjectDetector {
 
     private Interpreter interpreter;
     private final List<String> labels = new ArrayList<>();
-    private final Context context;
-
     private static final int INPUT_SIZE = 320;
     private static final int OUTPUT_ROWS = 84;
     private static final int OUTPUT_COLS = 2100;
-    private static final float CONFIDENCE_THRESHOLD = 0.25f;
+    private static final float CONFIDENCE_THRESHOLD = 0.40f;
+
+    private final ImageProcessor imageProcessor;
 
     public ObjectDetector(Context context) {
-        this.context = context;
-        setupInterpreter();
-        loadLabels();
-    }
-
-    private void setupInterpreter() {
         try {
-            MappedByteBuffer modelFile = FileUtil.loadMappedFile(context, "yolo11n_float16.tflite");
+            MappedByteBuffer modelFile = FileUtil.loadMappedFile(context, "yolo11s_float16 (1).tflite");
             Interpreter.Options options = new Interpreter.Options();
-            options.setNumThreads(4);
+
+            // 🔥 GPU ACCELERATION
+            try {
+                options.addDelegate(new GpuDelegate()); //
+                Log.d("Detector", "GPU Acceleration Enabled");
+            } catch (Exception e) {
+                options.setNumThreads(4);
+                Log.e("Detector", "GPU Failed, falling back to CPU");
+            }
+
             interpreter = new Interpreter(modelFile, options);
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e("Detector", "Model Load Failed", e);
         }
+
+        imageProcessor = new ImageProcessor.Builder()
+                .add(new ResizeOp(INPUT_SIZE, INPUT_SIZE, ResizeOp.ResizeMethod.BILINEAR))
+                .add(new NormalizeOp(0f, 255f))
+                .add(new CastOp(DataType.FLOAT32))
+                .build();
+
+        loadLabels(context);
     }
 
-    private void loadLabels() {
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(context.getAssets().open("labels.txt")))) {
+    private void loadLabels(Context context) {
+        try (BufferedReader reader = new BufferedReader(
+                new InputStreamReader(context.getAssets().open("labels.txt")))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                if (line.contains(":")) {
-                    labels.add(line.split(":")[1].trim());
-                } else {
-                    labels.add(line.trim());
-                }
+                labels.add(line.contains(":") ? line.split(":")[1].trim() : line.trim());
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e("Detector", "Labels Load Failed", e);
         }
     }
 
     public List<Detection> detect(Bitmap bitmap) {
         if (interpreter == null) return new ArrayList<>();
 
-        // Image processor scales the bitmap to 320x320 for the model
-        ImageProcessor imageProcessor = new ImageProcessor.Builder()
-                .add(new ResizeOp(INPUT_SIZE, INPUT_SIZE, ResizeOp.ResizeMethod.BILINEAR))
-                .add(new NormalizeOp(0f, 255f))
-                .add(new CastOp(DataType.FLOAT32))
-                .build();
-
         TensorImage tensorImage = new TensorImage(DataType.FLOAT32);
         tensorImage.load(bitmap);
         tensorImage = imageProcessor.process(tensorImage);
 
-        TensorBuffer outputBuffer = TensorBuffer.createFixedSize(new int[]{1, OUTPUT_ROWS, OUTPUT_COLS}, DataType.FLOAT32);
-        interpreter.run(tensorImage.getBuffer(), outputBuffer.getBuffer().rewind());
+        TensorBuffer outputBuffer = TensorBuffer.createFixedSize(
+                new int[]{1, OUTPUT_ROWS, OUTPUT_COLS},
+                DataType.FLOAT32
+        );
 
+        interpreter.run(tensorImage.getBuffer(), outputBuffer.getBuffer().rewind());
         return parseOutput(outputBuffer.getFloatArray(), bitmap.getWidth(), bitmap.getHeight());
     }
 
@@ -110,12 +114,11 @@ public class ObjectDetector {
             }
 
             if (maxScore > CONFIDENCE_THRESHOLD) {
-                float cx = output[0 * OUTPUT_COLS + c];
-                float cy = output[1 * OUTPUT_COLS + c];
+                float cx = output[c];
+                float cy = output[OUTPUT_COLS + c];
                 float w = output[2 * OUTPUT_COLS + c];
                 float h = output[3 * OUTPUT_COLS + c];
 
-                // Scale normalized coordinates to the actual image dimensions
                 float left = (cx - w / 2f) * imgWidth;
                 float top = (cy - h / 2f) * imgHeight;
                 float right = (cx + w / 2f) * imgWidth;
@@ -129,7 +132,7 @@ public class ObjectDetector {
     }
 
     private List<Detection> applyNMS(List<Detection> detections) {
-        Collections.sort(detections, (a, b) -> Float.compare(b.score, a.score));
+        detections.sort((a, b) -> Float.compare(b.score, a.score));
         List<Detection> results = new ArrayList<>();
         while (!detections.isEmpty()) {
             Detection best = detections.remove(0);

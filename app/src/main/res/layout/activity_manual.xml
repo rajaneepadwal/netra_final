@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#000000"
+    android:background="@drawable/button_gradient_blue"
     android:keepScreenOn="true">
 
     <Button
@@ -43,6 +43,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginBottom="4dp"
         android:backgroundTint="#aC1B8D9F"
+        android:elevation="10dp"
         android:text="GRIP"
         android:textColor="#FFFFFF"
         app:cornerRadius="12dp"
@@ -53,7 +54,9 @@
         android:id="@+id/txtStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="24dp"
+        android:shadowColor="#FF0000"
+        android:shadowRadius="10"
         android:text="DISCONNECTED"
         android:textColor="#FF0000"
         android:textSize="22sp"
@@ -62,11 +65,27 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <Button
+        android:id="@+id/btnReconnect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:backgroundTint="#aC1B8D9F"
+        android:elevation="10dp"
+        android:shadowColor="#093EFF"
+        android:shadowRadius="10"
+        android:text="⟳ Reconnect"
+        android:textColor="#FFFFFF"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.499"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtFunc" />
+
     <ToggleButton
         android:id="@+id/toggleTilt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="284dp"
+        android:layout_marginTop="260dp"
         android:backgroundTint="#1B8D9F"
         android:textColor="#FFFFFF"
         android:textOff="Tilt OFF"
@@ -90,18 +109,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.461" />
 
-
-    <Button
-        android:id="@+id/btnReconnect"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:backgroundTint="#aC1B8D9F"
-        android:text="⟳ Reconnect"
-        android:textColor="#FFFFFF"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtFunc" />
 
     <Button
         android:id="@+id/btnSquare"
@@ -172,6 +179,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="4dp"
         android:backgroundTint="#aC1B8D9F"
+        android:elevation="10dp"
         android:text="UNGRIP"
         android:textColor="#FFFFFF"
         app:cornerRadius="12dp"

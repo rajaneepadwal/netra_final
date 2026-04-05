@@ -64,7 +64,7 @@
 
             android:background="@drawable/bg_main_gradient"
             android:backgroundTint="@null"
-        android:fontFamily="@font/electrolize"
+            android:fontFamily="@font/electrolize"
             android:minWidth="160dp"
             android:minHeight="44dp"
             android:paddingHorizontal="40dp"

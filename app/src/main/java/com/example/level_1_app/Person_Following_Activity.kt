@@ -56,7 +56,7 @@ class Person_Following_Activity : AppCompatActivity() {
             val preview = Preview.Builder().build().also { it.setSurfaceProvider(viewFinder.surfaceProvider) }
 
             val imageAnalysis = ImageAnalysis.Builder()
-                .setTargetResolution(Size(320, 320))
+                .setTargetResolution(Size(640, 480))
                 .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                 .setOutputImageFormat(ImageAnalysis.OUTPUT_IMAGE_FORMAT_RGBA_8888)
                 .build()

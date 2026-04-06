@@ -30,6 +30,7 @@ public class ManualActivity extends AppCompatActivity {
     private String lastToastMessage = "";
     private SensorManager sensorManager;
     private Sensor accelerometer;
+    private Sensor gyroscope;
     private boolean isTiltEnabled = false;
     private String lastCommand = "S*";
 
@@ -65,6 +66,7 @@ public class ManualActivity extends AppCompatActivity {
 
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        gyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
         bluetoothConnection = BluetoothConnectionManager.getInstance();
 
         updateConnectionStatus(); // Centralized status update

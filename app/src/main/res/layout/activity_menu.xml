@@ -228,43 +228,6 @@
             </LinearLayout>
 
             <!-- CHATBOT — UNCHANGED -->
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cardChatbot"
-                android:layout_width="match_parent"
-                android:layout_height="90dp"
-                android:layout_marginBottom="18dp"
-                android:foreground="?attr/selectableItemBackground"
-                app:cardBackgroundColor="#aC1B8D9F"
-                app:cardCornerRadius="20dp"
-                app:cardElevation="6dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp">
-
-                    <ImageView
-                        android:layout_width="44dp"
-                        android:layout_height="41dp"
-                        android:src="@drawable/ic_chat"
-                        android:tint="#000000" />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="12dp"
-                        android:layout_weight="1"
-                        android:fontFamily="@font/quantico_regular"
-                        android:text="OUR CHATBOT"
-                        android:textColor="#E0E0E0"
-                        android:textSize="20sp"
-                        android:textStyle="bold" />
-
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
 
             <!-- HAND GESTURE CONTROL — UNCHANGED -->
             <androidx.cardview.widget.CardView

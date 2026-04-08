@@ -14,23 +14,26 @@ class OverlayView @JvmOverloads constructor(
     private val boxPaint = Paint().apply {
         color = Color.RED
         style = Paint.Style.STROKE
-        strokeWidth = 8f // Slightly thicker for better visibility
+        strokeWidth = 8f
     }
 
     private val textPaint = Paint().apply {
         color = Color.CYAN
-        textSize = 45f
+        textSize = 40f
         typeface = Typeface.DEFAULT_BOLD
     }
 
     private var results: List<Detection> = emptyList()
     private var scaleX = 1f
     private var scaleY = 1f
+    private var rotationDegrees = 0
 
-    fun setResults(list: List<Detection>, sX: Float, sY: Float) {
+    // 🔥 Added rotation parameter to setResults
+    fun setResults(list: List<Detection>, sX: Float, sY: Float, rotation: Int) {
         results = list
         scaleX = sX
         scaleY = sY
+        rotationDegrees = rotation
         invalidate()
     }
 
@@ -39,23 +42,33 @@ class OverlayView @JvmOverloads constructor(
 
         for (det in results) {
             val box = det.box
+            val rect = RectF()
 
-            // Map detection box directly to screen coordinates with zero smoothing
-            val mappedBox = RectF(
-                box.left * scaleX,
-                box.top * scaleY,
-                box.right * scaleX,
-                box.bottom * scaleY
-            )
+            // 🔥 COORDINATE TRANSFORMATION BASED ON SENSOR ROTATION
+            // This fixes boxes appearing "to the side" or "above"
+            when (rotationDegrees) {
+                90 -> {
+                    rect.left = (1f - box.bottom) * scaleX
+                    rect.top = box.left * scaleY
+                    rect.right = (1f - box.top) * scaleX
+                    rect.bottom = box.right * scaleY
+                }
+                270 -> {
+                    rect.left = box.top * scaleX
+                    rect.top = (1f - box.right) * scaleY
+                    rect.right = box.bottom * scaleX
+                    rect.bottom = (1f - box.left) * scaleY
+                }
+                else -> { // 0 or 180
+                    rect.left = box.left * scaleX
+                    rect.top = box.top * scaleY
+                    rect.right = box.right * scaleX
+                    rect.bottom = box.bottom * scaleY
+                }
+            }
 
-            canvas.drawRect(mappedBox, boxPaint)
-
-            canvas.drawText(
-                "${det.label} ${(det.score * 100).toInt()}%",
-                mappedBox.left,
-                mappedBox.top - 15f,
-                textPaint
-            )
+            canvas.drawRect(rect, boxPaint)
+            canvas.drawText("${det.label}", rect.left, rect.top - 10f, textPaint)
         }
     }
 }

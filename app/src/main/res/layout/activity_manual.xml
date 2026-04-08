@@ -4,185 +4,225 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/button_gradient_blue"
+    android:background="#020205"
     android:keepScreenOn="true">
 
-    <Button
-        android:id="@+id/btnBack"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:backgroundTint="#ac1B8D9F"
-        android:text="← Back"
-        android:textColor="#FFFFFF"
-        app:cornerRadius="10dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0.1"
+        android:background="@android:drawable/status_bar_item_background"
+        tools:layout_editor_absoluteX="-16dp"
+        tools:layout_editor_absoluteY="48dp" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/telemetryBar"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="#1A00E5FF"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/txtStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="monospace"
+            android:text="Disconnected"
+            android:textColor="#FF0019"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.515" />
+
+        <Button
+            android:id="@+id/btnReconnect"
+            android:layout_width="90dp"
+            android:layout_height="45dp"
+            android:layout_marginEnd="16dp"
+            android:backgroundTint="#3300E5FF"
+            android:text="RE-SYNC"
+            android:textSize="10sp"
+            app:cornerRadius="2dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.533" />
+
+        <Button
+            android:id="@+id/btnBack"
+            android:layout_width="90dp"
+            android:layout_height="45dp"
+            android:layout_margin="12dp"
+            android:layout_marginStart="16dp"
+            android:backgroundTint="#3300E5FF"
+            android:text="Back"
+            android:textColor="#312B2B"
+            android:textSize="18sp"
+            app:cornerRadius="2dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.example.joystick_lib.Joystick_Lib
         android:id="@+id/joystick_Lib"
-        android:layout_width="222dp"
-        android:layout_height="226dp"
-        android:layout_marginStart="76dp"
-        app:JV_backgroundSizeRatio="75%"
-        app:JV_borderColor="#FFFFFF"
-        app:JV_borderWidth="4dp"
-        app:JV_buttonColor="#FFFFFF"
-        app:JV_buttonSizeRatio="20%"
-        app:JV_fixedCenter="false"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.497" />
-
-    <Button
-        android:id="@+id/btnGrip"
-        android:layout_width="100dp"
-        android:layout_height="60dp"
+        android:layout_width="240dp"
+        android:layout_height="240dp"
         android:layout_marginStart="16dp"
-        android:layout_marginBottom="4dp"
-        android:backgroundTint="#aC1B8D9F"
-        android:elevation="10dp"
-        android:text="GRIP"
-        android:textColor="#FFFFFF"
-        app:cornerRadius="12dp"
+        app:JV_backgroundSizeRatio="85%"
+        app:JV_borderColor="#4000E5FF"
+        app:JV_borderWidth="1dp"
+        app:JV_buttonColor="#CC00E5FF"
+        app:JV_buttonSizeRatio="22%"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/txtStatus"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:shadowColor="#FF0000"
-        android:shadowRadius="10"
-        android:text="DISCONNECTED"
-        android:textColor="#FF0000"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/btnReconnect"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:backgroundTint="#aC1B8D9F"
-        android:elevation="10dp"
-        android:shadowColor="#093EFF"
-        android:shadowRadius="10"
-        android:text="⟳ Reconnect"
-        android:textColor="#FFFFFF"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.499"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtFunc" />
-
-    <ToggleButton
-        android:id="@+id/toggleTilt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="44dp"
-        android:backgroundTint="#1B8D9F"
-        android:textColor="#FFFFFF"
-        android:textOff="Tilt OFF"
-        android:textOn="Tilt ON"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/actionGroup"
+        android:layout_width="240dp"
+        android:layout_height="230dp"
+        android:layout_marginEnd="24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.499"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <View
+            android:layout_width="220dp"
+            android:layout_height="220dp"
+            android:background="@android:drawable/presence_online"
+            android:backgroundTint="#0DFFFFFF"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnTriangle"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:text="▲"
+            android:textColor="#39FF14"
+            android:textSize="32sp"
+            app:cornerRadius="15dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:strokeColor="#39FF14"
+            app:strokeWidth="2dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSquare"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:text="■"
+            android:textColor="#FF00E5"
+            android:textSize="30sp"
+            app:cornerRadius="15dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:strokeColor="#FF00E5"
+            app:strokeWidth="2dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnCircle"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:text="●"
+            android:textColor="#FF3131"
+            android:textSize="36sp"
+            app:cornerRadius="15dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:strokeColor="#FF3131"
+            app:strokeWidth="2dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnCross"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:text="✖"
+            android:textColor="#00E5FF"
+            android:textSize="24sp"
+            app:cornerRadius="15dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:strokeColor="#00E5FF"
+            app:strokeWidth="2dp" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ToggleButton
+            android:id="@+id/toggleTilt"
+            android:layout_width="80dp"
+            android:layout_height="45dp"
+            android:backgroundTint="#111"
+            android:textColor="#FFF"
+            android:textOff="GYRO_OFF"
+            android:textOn="GYRO_ON"
+            android:textSize="10sp"
+            app:cornerRadius="6dp" />
+
+    </LinearLayout>
 
     <TextView
         android:id="@+id/txtFunc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="168dp"
+        android:shadowColor="#00E5FF"
+        android:shadowRadius="20"
         android:text="S*"
-        android:textColor="#FFFFFF"
-        android:textSize="42sp"
+        android:textColor="#00E5FF"
+        android:textSize="32sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.461" />
-
+        app:layout_constraintEnd_toEndOf="@+id/view"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/btnSquare"
-        android:layout_width="70dp"
-        android:layout_height="55dp"
-        android:layout_marginEnd="84dp"
-        android:backgroundTint="#161E37"
-        android:text="□"
-        android:textColor="#0046FF"
-        android:textSize="25sp"
-        app:cornerRadius="12dp"
-        app:layout_constraintBottom_toBottomOf="@+id/btnCircle"
-        app:layout_constraintEnd_toStartOf="@+id/btnCircle"
-        app:layout_constraintTop_toTopOf="@+id/btnCircle"
-        app:layout_constraintVertical_bias="1.0" />
-
-    <Button
-        android:id="@+id/btnTriangle"
-        android:layout_width="70dp"
-        android:layout_height="55dp"
-        android:layout_marginBottom="28dp"
-        android:backgroundTint="#161E37"
-        android:text="△"
-        android:textAlignment="center"
-        android:textColor="#FF0000"
-        android:textSize="27sp"
-        app:cornerRadius="12dp"
-        app:layout_constraintBottom_toTopOf="@+id/btnCircle"
-        app:layout_constraintEnd_toEndOf="@+id/btnCircle"
-        app:layout_constraintHorizontal_bias="0.503"
-        app:layout_constraintStart_toStartOf="@+id/btnSquare" />
-
-    <Button
-        android:id="@+id/btnCircle"
-        android:layout_width="70dp"
-        android:layout_height="55dp"
-        android:layout_marginEnd="32dp"
-        android:backgroundTint="#161E37"
-        android:text="◯"
-        android:textAlignment="center"
-        android:textColor="#1CB43B"
-        android:textSize="25sp"
-        app:cornerRadius="12dp"
+        android:id="@+id/btnGrip"
+        android:layout_width="110dp"
+        android:layout_height="45dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="#00FF41"
+        android:text="GRAB"
+        android:textColor="#000"
+        android:textStyle="bold"
+        app:cornerRadius="6dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.443" />
-
-    <Button
-        android:id="@+id/btnCross"
-        android:layout_width="70dp"
-        android:layout_height="55dp"
-        android:layout_marginTop="28dp"
-        android:backgroundTint="#161E37"
-        android:text="✕"
-        android:textColor="#DD03FF"
-        android:textSize="25sp"
-        app:cornerRadius="12dp"
-        app:layout_constraintEnd_toEndOf="@+id/btnCircle"
-        app:layout_constraintHorizontal_bias="0.503"
-        app:layout_constraintStart_toStartOf="@+id/btnSquare"
-        app:layout_constraintTop_toBottomOf="@+id/btnSquare" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/btnUngrip"
-        android:layout_width="117dp"
-        android:layout_height="59dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="4dp"
-        android:backgroundTint="#aC1B8D9F"
-        android:elevation="10dp"
-        android:text="UNGRIP"
-        android:textColor="#FFFFFF"
-        app:cornerRadius="12dp"
+        android:layout_width="110dp"
+        android:layout_height="45dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="#FF0055"
+        android:text="DROP"
+        android:textColor="#000"
+        android:textStyle="bold"
+        app:cornerRadius="6dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

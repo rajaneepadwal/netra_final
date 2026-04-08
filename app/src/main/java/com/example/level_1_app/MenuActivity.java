@@ -26,7 +26,7 @@ public class MenuActivity extends AppCompatActivity {
         cardManual = findViewById(R.id.cardManual);
         cardColor = findViewById(R.id.cardColor);
         cardPerson = findViewById(R.id.cardPerson);
-        cardChatbot = findViewById(R.id.cardChatbot);
+//        cardChatbot = findViewById(R.id.cardChatbot);
         cardGesture = findViewById(R.id.cardGesture);
 
         // Bottom button
@@ -51,8 +51,8 @@ public class MenuActivity extends AppCompatActivity {
         cardColor.setOnClickListener(v ->
                 startActivity(new Intent(this, ColorActivity.class)));
 
-        cardChatbot.setOnClickListener(v ->
-                startActivity(new Intent(this, Chatbot_Activity.class)));
+//        cardChatbot.setOnClickListener(v ->
+//                startActivity(new Intent(this, Chatbot_Activity.class)));
 
         cardGesture.setOnClickListener(v -> {
             startActivity(new Intent(this, GestureActivity.class));

@@ -29,7 +29,7 @@ class Person_Following_Activity : AppCompatActivity() {
     @Volatile private var isProcessing = false
     private var lastCommand = "S*"
     private var missedFrames = 0
-    private val MAX_ALLOWED_MISSES = 5 //
+    private val MAX_ALLOWED_MISSES = 5
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,7 +56,7 @@ class Person_Following_Activity : AppCompatActivity() {
             val preview = Preview.Builder().build().also { it.setSurfaceProvider(viewFinder.surfaceProvider) }
 
             val imageAnalysis = ImageAnalysis.Builder()
-                .setTargetResolution(Size(640, 480))
+                .setTargetResolution(Size(320, 320))
                 .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                 .setOutputImageFormat(ImageAnalysis.OUTPUT_IMAGE_FORMAT_RGBA_8888)
                 .build()
@@ -69,22 +69,27 @@ class Person_Following_Activity : AppCompatActivity() {
                 isProcessing = true
 
                 try {
+                    val rotationDegrees = imageProxy.imageInfo.rotationDegrees
                     val bitmap = imageProxy.toBitmap()
                     val detections = objectDetector.detect(bitmap)
 
-                    // 🔥 FIX: Safe Access to Spinner to prevent NullPointerException
                     val selectedItem = spinner.selectedItem
                     if (selectedItem != null) {
                         val targetLabel = selectedItem.toString()
                         val target = detections.filter { it.label.equals(targetLabel, true) }.maxByOrNull { it.score }
 
-                        val sX = viewFinder.width.toFloat() / bitmap.width
-                        val sY = viewFinder.height.toFloat() / bitmap.height
+                        // 🔥 Rotation-aware coordinate mapping
+                        val isRotated = rotationDegrees == 90 || rotationDegrees == 270
+                        val previewWidth = if (isRotated) bitmap.height else bitmap.width
+                        val previewHeight = if (isRotated) bitmap.width else bitmap.height
+
+                        val sX = viewFinder.width.toFloat() / previewWidth
+                        val sY = viewFinder.height.toFloat() / previewHeight
 
                         runOnUiThread {
                             if (target != null) {
                                 missedFrames = 0
-                                overlayView.setResults(listOf(target), sX, sY)
+                                overlayView.setResults(listOf(target), sX, sY, rotationDegrees)
                                 processMovement(target.box, bitmap.width)
                             } else {
                                 handleLostTarget()
@@ -115,6 +120,7 @@ class Person_Following_Activity : AppCompatActivity() {
             else -> "F*"
         }
 
+        // Only send if the command changes to prevent Bluetooth flooding
         if (newCommand != lastCommand) {
             sendCommand(newCommand)
             lastCommand = newCommand
@@ -122,10 +128,10 @@ class Person_Following_Activity : AppCompatActivity() {
     }
 
     private fun handleLostTarget() {
-        overlayView.setResults(emptyList(), 1f, 1f)
+        overlayView.setResults(emptyList(), 1f, 1f, 0)
         missedFrames++
 
-        // Anti-Stutter: Only stop if person is lost for more than 5 frames
+        // Anti-Stutter: Maintain last command for 5 frames if target is lost
         if (missedFrames > MAX_ALLOWED_MISSES && lastCommand != "S*") {
             sendCommand("S*")
             lastCommand = "S*"

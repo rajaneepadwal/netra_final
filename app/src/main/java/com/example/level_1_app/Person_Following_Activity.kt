@@ -128,10 +128,11 @@ class Person_Following_Activity : AppCompatActivity() {
     }
 
     private fun handleLostTarget() {
-        overlayView.setResults(emptyList(), 1f, 1f, 0)
+        // Maintain a default rotation (usually 90) even when clearing results
+        overlayView.setResults(emptyList(), 1f, 1f, 270)
         missedFrames++
 
-        // Anti-Stutter: Maintain last command for 5 frames if target is lost
+        // Anti-Stutter: Continue last command for 5 frames before stopping
         if (missedFrames > MAX_ALLOWED_MISSES && lastCommand != "S*") {
             sendCommand("S*")
             lastCommand = "S*"

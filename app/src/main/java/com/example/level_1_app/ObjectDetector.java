@@ -45,7 +45,7 @@ public class ObjectDetector {
 
     public ObjectDetector(Context context) {
         try {
-            MappedByteBuffer modelFile = FileUtil.loadMappedFile(context, "yolo11n_float16.tflite");
+            MappedByteBuffer modelFile = FileUtil.loadMappedFile(context, "yolo11s_float16 (1).tflite");
             Interpreter.Options options = new Interpreter.Options();
 
             // 🔥 GPU ACCELERATION

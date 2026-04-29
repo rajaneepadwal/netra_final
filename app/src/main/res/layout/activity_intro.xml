@@ -39,7 +39,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="NETRA"
-            android:fontFamily="@font/quantico_bold"
+            android:fontFamily="@font/quantico_regular"
             android:gravity="center"
 
             android:textSize="90sp"
@@ -60,7 +60,7 @@
             android:id="@+id/btnGetStarted"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="50dp"
 
             android:background="@drawable/bg_main_gradient"
             android:backgroundTint="@null"
@@ -69,11 +69,11 @@
             android:minHeight="44dp"
             android:paddingHorizontal="40dp"
 
-            android:paddingVertical="20dp"
+            android:paddingVertical="15dp"
             android:text="GET STARTED"
 
             android:textColor="#FFFFFF"
-            android:textSize="22sp" />
+            android:textSize="20sp" />
     </LinearLayout>
 
 </LinearLayout>

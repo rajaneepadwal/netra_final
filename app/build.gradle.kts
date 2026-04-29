@@ -56,21 +56,19 @@ dependencies {
         // Core Android
         implementation(libs.androidx.core.ktx)
         implementation(libs.androidx.lifecycle.runtime.ktx)
-        implementation(libs.androidx.activity.compose)
-
+        implementation("androidx.activity:activity-compose:1.9.0")
         implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-
+        implementation("androidx.appcompat:appcompat:1.7.0")
         // Jetpack Compose
-        implementation(platform(libs.androidx.compose.bom))
+        implementation(platform("androidx.compose:compose-bom:2024.06.00"))
         implementation(libs.androidx.ui)
         implementation(libs.androidx.ui.graphics)
         implementation(libs.androidx.ui.tooling.preview)
         implementation(libs.androidx.material3)
 
         // Material Design Components (for traditional XML layouts)
-        implementation("com.google.android.material:material:1.11.0")
-
-        // ===== OPENCV FOR COMPUTER VISION =====
+        implementation("com.google.android.material:material:1.12.0")
+        implementation("androidx.camera:camera-core:1.3.1")        // ===== OPENCV FOR COMPUTER VISION =====
         implementation("org.opencv:opencv:4.9.0")
     // for accessing https
         implementation ("com.squareup.okhttp3:okhttp:4.12.0")
@@ -89,6 +87,7 @@ dependencies {
         implementation("org.tensorflow:tensorflow-lite:2.14.0")
         implementation("org.tensorflow:tensorflow-lite-support:0.4.4")
         implementation("org.tensorflow:tensorflow-lite-gpu:2.14.0")
+        implementation("org.tensorflow:tensorflow-lite-gpu-api:2.14.0")
         //==for joystick==
         implementation("com.github.Krusshnaa:Joystick_Lib:1.0")
         implementation("com.airbnb.android:lottie:6.4.0")
@@ -97,11 +96,11 @@ dependencies {
         testImplementation(libs.junit)
         androidTestImplementation(libs.androidx.junit)
         androidTestImplementation(libs.androidx.espresso.core)
-        androidTestImplementation(platform(libs.androidx.compose.bom))
-        androidTestImplementation(libs.androidx.ui.test.junit4)
+        androidTestImplementation(platform("androidx.compose:compose-bom:2024.06.00"))
+        androidTestImplementation("androidx.compose.ui:ui-test-junit4")
         debugImplementation(libs.androidx.ui.tooling)
         debugImplementation(libs.androidx.ui.test.manifest)
-
+    implementation ("com.google.mediapipe:tasks-vision:0.10.0")
 }
 
 

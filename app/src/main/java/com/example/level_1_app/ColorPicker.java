@@ -1,10 +1,8 @@
 package com.example.level_1_app;
 
 import android.util.Log;
-
 import org.opencv.core.Mat;
 import org.opencv.core.Scalar;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -13,25 +11,19 @@ public class ColorPicker {
 
     private static final String TAG = "ColorPicker";
 
-    // HSV bounds
     private Scalar lowerBound1, upperBound1;
     private Scalar lowerBound2, upperBound2;
 
-    private boolean colorPicked = false;
-
-    private boolean isRedColor = false;
+    private boolean colorPicked  = false;
+    private boolean isRedColor   = false;
     private boolean isBlackColor = false;
+    private boolean isWhiteColor = false;
 
     private LightingMode lightingMode = LightingMode.GOOD_LIGHTING;
 
-    public enum LightingMode {
-        BAD_LIGHTING,
-        GOOD_LIGHTING
-    }
+    public enum LightingMode { BAD_LIGHTING, GOOD_LIGHTING }
 
-    public void setLightingMode(LightingMode mode) {
-        this.lightingMode = mode;
-    }
+    public void setLightingMode(LightingMode mode) { this.lightingMode = mode; }
 
     public boolean pickColor(Mat hsvFrame, int x, int y) {
         if (hsvFrame == null || hsvFrame.empty()) return false;
@@ -44,124 +36,113 @@ public class ColorPicker {
         double s = hsv[1];
         double v = hsv[2];
 
-        isRedColor = false;
+        isRedColor   = false;
         isBlackColor = false;
+        isWhiteColor = false;
+        lowerBound2  = null;
+        upperBound2  = null;
 
-        // Tolerance based on lighting
+        // Tolerances
         int hTol, sTol, vTol;
         if (lightingMode == LightingMode.BAD_LIGHTING) {
-            hTol = 4;
-            sTol = 45;
-            vTol = 45;
+            hTol = 10; sTol = 60; vTol = 60;
         } else {
-            hTol = 6;
-            sTol = 60;
-            vTol = 60;
+            hTol = 8;  sTol = 50; vTol = 50;
         }
 
-        // 1. Check if it's red
-        // Use fixed red ranges: [0, lowRedMax] and [highRedMin, 179]
-        int lowRedMax = 10;
-        int highRedMin = 170;
+        // ── 1. BLACK: low V, any S ─────────────────────────────────────────
+        // Must check BEFORE white because black has low V AND low S
+        if (v < 55) {
+            isBlackColor = true;
+            int vUpper = (lightingMode == LightingMode.BAD_LIGHTING) ? 80 : 60;
+            lowerBound1 = new Scalar(0,   0,   0);
+            upperBound1 = new Scalar(179, 255, vUpper);
+            colorPicked = true;
+            Log.d(TAG, "BLACK selected — V=" + v);
+            return true;
+        }
 
-        boolean redHue = (h <= lowRedMax) || (h >= highRedMin);
-        boolean redSatVal = (s > 40 && v > 40);  // avoid very dark/gray as red
+        // ── 2. WHITE: low S + high V ───────────────────────────────────────
+        // S is near 0, V is high — H is meaningless noise so ignore it
+        if (s < 50 && v > 150) {
+            isWhiteColor = true;
+            int sUpper = (lightingMode == LightingMode.BAD_LIGHTING) ? 80 : 60;
+            int vLower = (lightingMode == LightingMode.BAD_LIGHTING) ? 130 : 150;
+            lowerBound1 = new Scalar(0,   0,      vLower);
+            upperBound1 = new Scalar(179, sUpper, 255);
+            colorPicked = true;
+            Log.d(TAG, "WHITE selected — S=" + s + " V=" + v);
+            return true;
+        }
 
-        if (redHue && redSatVal) {
+        // ── 3. RED / PINK: hue wraps around 0°/180° ────────────────────────
+        boolean redHue  = (h <= 15) || (h >= 165);
+        boolean pinkHue = redHue;                  // same hue zone, just lower S
+        // Pink has lower S — accept s > 20 to catch desaturated pinks
+        boolean redSV   = (s > 20 && v > 40);
+
+        if (pinkHue && redSV) {
             isRedColor = true;
 
-            // Clamp S and V to avoid including too much gray/black
-            int sMin = Math.max((int) s - sTol, 40);
+            // S/V range — floor at 15 so pale pink isn't cut off
+            int sMin = Math.max((int) s - sTol, 15);
             int vMin = Math.max((int) v - vTol, 40);
             int sMax = Math.min((int) s + sTol, 255);
             int vMax = Math.min((int) v + vTol, 255);
 
-            // Low red range: [0, lowRedMax] + adjusted S,V
-            lowerBound1 = new Scalar(0, sMin, vMin);
-            upperBound1 = new Scalar(lowRedMax, sMax, vMax);
+            // Low red range [0–15]
+            lowerBound1 = new Scalar(0,   sMin, vMin);
+            upperBound1 = new Scalar(15,  sMax, vMax);
 
-            // High red range: [highRedMin, 179] + same S,V
-            lowerBound2 = new Scalar(highRedMin, sMin, vMin);
+            // High red range [165–179]
+            lowerBound2 = new Scalar(165, sMin, vMin);
             upperBound2 = new Scalar(179, sMax, vMax);
 
             colorPicked = true;
-            Log.d(TAG, "Red color selected");
+            Log.d(TAG, "RED/PINK selected — H=" + h + " S=" + s + " V=" + v);
             return true;
         }
 
-        // 2. Check if it's black (low V and low S)
-        // Black: very dark and desaturated
-        if (v < 60 && s < 80) {
-            isBlackColor = true;
-
-            // Black mask: full hue, any saturation, low value
-            lowerBound1 = new Scalar(0, 0, 0);
-            upperBound1 = new Scalar(179, 255, 60);  // adjust V upper as needed
-
-            lowerBound2 = null;
-            upperBound2 = null;
-
-            colorPicked = true;
-            Log.d(TAG, "Black color selected");
-            return true;
-        }
-
-        // 3. Normal color (not red, not black)
-        // Use centered range around picked hue
+        // ── 4. NORMAL COLOR ────────────────────────────────────────────────
         int hMin = (int) Math.max(h - hTol, 0);
         int hMax = (int) Math.min(h + hTol, 179);
 
-        // Avoid very low S/V to prevent including gray/black
-        int sMin = Math.max((int) s - sTol, 40);
-        int vMin = Math.max((int) v - vTol, 40);
+        // For normal colors S should be decent — floor at 30 not 40
+        int sMin = Math.max((int) s - sTol, 30);
+        int vMin = Math.max((int) v - vTol, 30);
         int sMax = Math.min((int) s + sTol, 255);
         int vMax = Math.min((int) v + vTol, 255);
 
         lowerBound1 = new Scalar(hMin, sMin, vMin);
         upperBound1 = new Scalar(hMax, sMax, vMax);
 
-        lowerBound2 = null;
-        upperBound2 = null;
-
         colorPicked = true;
-
-        Log.d(TAG, "Picked HSV: " + Arrays.toString(hsv));
-        Log.d(TAG, "Red: " + isRedColor + " | Black: " + isBlackColor);
-
+        Log.d(TAG, "NORMAL color — H=" + h + " S=" + s + " V=" + v);
+        Log.d(TAG, "Range → Lower:" + lowerBound1 + " Upper:" + upperBound1);
         return true;
     }
 
     public List<Scalar[]> getColorRanges() {
         List<Scalar[]> ranges = new ArrayList<>();
-
         if (!colorPicked) return ranges;
 
         ranges.add(new Scalar[]{lowerBound1, upperBound1});
-        if (isRedColor && lowerBound2 != null && upperBound2 != null) {
+
+        // Second range only for red (hue wrap)
+        if (isRedColor && lowerBound2 != null) {
             ranges.add(new Scalar[]{lowerBound2, upperBound2});
         }
-
         return ranges;
     }
 
     public void reset() {
-        lowerBound1 = null;
-        upperBound1 = null;
-        lowerBound2 = null;
-        upperBound2 = null;
-        colorPicked = false;
-        isRedColor = false;
-        isBlackColor = false;
-
+        lowerBound1 = upperBound1 = null;
+        lowerBound2 = upperBound2 = null;
+        colorPicked = isRedColor = isBlackColor = isWhiteColor = false;
         Log.d(TAG, "ColorPicker reset");
     }
 
-    public boolean isColorPicked() {
-        return colorPicked;
-    }
-
-    public boolean isBlackColor() {
-        return isBlackColor;
-    }
-
+    public boolean isColorPicked()  { return colorPicked;  }
+    public boolean isBlackColor()   { return isBlackColor; }
+    public boolean isWhiteColor()   { return isWhiteColor; }
 }

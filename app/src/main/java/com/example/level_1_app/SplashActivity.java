@@ -17,6 +17,9 @@ public class SplashActivity extends AppCompatActivity {
 
     private boolean anim1Done = false;
     private boolean anim2Done = false;
+    private boolean hasNavigated = false;
+
+    private Runnable navigationRunnable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,30 +30,34 @@ public class SplashActivity extends AppCompatActivity {
         lottieAnim2 = findViewById(R.id.lottieAnim2);
         popupText = findViewById(R.id.popupText);
 
-        // Hide text initially
         popupText.setAlpha(0f);
 
-        // Normal speed
+        // Restore state (important for rotation / process kill)
+        if (savedInstanceState != null) {
+            anim1Done = savedInstanceState.getBoolean("anim1Done", false);
+            anim2Done = savedInstanceState.getBoolean("anim2Done", false);
+            hasNavigated = savedInstanceState.getBoolean("hasNavigated", false);
+        }
+
+        // Prevent listener stacking
+        lottieAnim1.removeAllAnimatorListeners();
+        lottieAnim2.removeAllAnimatorListeners();
+
         lottieAnim1.setSpeed(1f);
         lottieAnim2.setSpeed(1f);
 
-        // Start animations
         lottieAnim1.playAnimation();
         lottieAnim2.playAnimation();
 
-        // Animate text AFTER main animation ends (best UX)
         lottieAnim2.addAnimatorListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-
-                showPopupText();  // <-- text animation
-
+                showPopupText();
                 anim2Done = true;
                 checkAndMove();
             }
         });
 
-        // Listener for animation 1
         lottieAnim1.addAnimatorListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
@@ -58,21 +65,26 @@ public class SplashActivity extends AppCompatActivity {
                 checkAndMove();
             }
         });
+
+        // If already done (after recreation), continue flow
+        checkAndMove();
     }
 
     private void showPopupText() {
 
-        // Start as a tiny dot
+        if (isFinishing() || isDestroyed()) return;
+
         popupText.setScaleX(0.05f);
         popupText.setScaleY(0.05f);
         popupText.setAlpha(0f);
 
-        // Ensure it expands from center (dot effect)
         popupText.post(() -> {
+
+            if (isFinishing() || isDestroyed()) return;
+
             popupText.setPivotX(popupText.getWidth() / 2f);
             popupText.setPivotY(popupText.getHeight() / 2f);
 
-            // Step 1: Explosive expand
             popupText.animate()
                     .scaleX(1.2f)
                     .scaleY(1.2f)
@@ -81,7 +93,6 @@ public class SplashActivity extends AppCompatActivity {
                     .setInterpolator(new android.view.animation.OvershootInterpolator())
                     .withEndAction(() ->
 
-                            // Step 2: Settle to normal size
                             popupText.animate()
                                     .scaleX(1f)
                                     .scaleY(1f)
@@ -93,6 +104,7 @@ public class SplashActivity extends AppCompatActivity {
                     .start();
         });
     }
+
     private void startShake() {
         popupText.animate()
                 .translationX(10f)
@@ -125,11 +137,19 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void checkAndMove() {
-        if (anim1Done && anim2Done) {
-            popupText.postDelayed(() -> {
-                startActivity(new Intent(SplashActivity.this, IntroActivity.class));
+        if (anim1Done && anim2Done && !hasNavigated) {
+            hasNavigated = true;
+
+            navigationRunnable = () -> {
+                try {
+                    startActivity(new Intent(SplashActivity.this, IntroActivity.class));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 finish();
-            }, 400); // small delay so user sees text
+            };
+
+            popupText.postDelayed(navigationRunnable, 400);
         }
     }
 
@@ -143,7 +163,31 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (lottieAnim1 != null) lottieAnim1.resumeAnimation();
-        if (lottieAnim2 != null) lottieAnim2.resumeAnimation();
+        if (lottieAnim1 != null && !lottieAnim1.isAnimating()) {
+            lottieAnim1.resumeAnimation();
+        }
+        if (lottieAnim2 != null && !lottieAnim2.isAnimating()) {
+            lottieAnim2.resumeAnimation();
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean("anim1Done", anim1Done);
+        outState.putBoolean("anim2Done", anim2Done);
+        outState.putBoolean("hasNavigated", hasNavigated);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if (navigationRunnable != null) {
+            popupText.removeCallbacks(navigationRunnable);
+        }
+
+        if (lottieAnim1 != null) lottieAnim1.cancelAnimation();
+        if (lottieAnim2 != null) lottieAnim2.cancelAnimation();
     }
 }

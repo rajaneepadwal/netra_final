@@ -22,12 +22,10 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-
 import java.util.ArrayList;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -43,7 +41,7 @@ public class BluetoothActivity extends AppCompatActivity {
     private DeviceListAdapter adapter;
     private BluetoothConnectionManager connectionManager;
     private ArrayList<DeviceItem> devices;
-
+    private Runnable delayedNavigation;
     private ListView listView;
 
     private ImageButton btnRefresh;
@@ -347,8 +345,8 @@ public class BluetoothActivity extends AppCompatActivity {
     };
 
     private void connectToDevice(BluetoothDevice device) {
-        Intent intent = new Intent(this, MenuActivity.class);
-        startActivity(intent);
+//        Intent intent = new Intent(this, MenuActivity.class);
+//        startActivity(intent);
         if (device == null) {
             return;
         }
@@ -448,10 +446,17 @@ public class BluetoothActivity extends AppCompatActivity {
                 sendData("START\n");
 
                 runOnUiThread(() -> {
+                    if (isFinishing() || isDestroyed()) return;
+
                     Toast.makeText(this, "Connected to " + deviceName, Toast.LENGTH_SHORT).show();
-                    handler.postDelayed(() -> {
-                        openMenuActivity();
-                    }, 500);
+
+                    delayedNavigation = () -> {
+                        if (!isFinishing() && !isDestroyed()) {
+                            openMenuActivity();
+                        }
+                    };
+
+                    handler.postDelayed(delayedNavigation, 500);
                 });
 
             } catch (IOException e) {
@@ -546,17 +551,20 @@ public class BluetoothActivity extends AppCompatActivity {
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
         registerReceiver(discoveryReceiver, filter);
     }
-
     @Override
     protected void onStop() {
         super.onStop();
+
+        try { unregisterReceiver(pairingReceiver); } catch (Exception ignored) {}
+        try { unregisterReceiver(discoveryReceiver); } catch (Exception ignored) {}
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        try { unregisterReceiver(pairingReceiver); } catch (Exception ignored) {}
-        try { unregisterReceiver(discoveryReceiver); } catch (Exception ignored) {}
+        if (handler != null && delayedNavigation != null) {
+            handler.removeCallbacks(delayedNavigation);
+        }
         cleanup();
     }
 

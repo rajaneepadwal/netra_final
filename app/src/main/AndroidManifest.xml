@@ -27,6 +27,7 @@
         tools:targetApi="s" />
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
+    <uses-permission android:name="android.permission.VIBRATE"/>
 
     <!-- Location Permission (required for Bluetooth scanning on Android 10 and below) -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -76,11 +77,15 @@
             android:name=".Person_Following_Activity"
             android:exported="false"
             android:screenOrientation="landscape" />
+<<<<<<< HEAD
         <activity
             android:name=".GestureActivity"
             android:exported="false"
             android:screenOrientation="landscape"
             />
+=======
+
+>>>>>>> af403b85be5c64f0240c67c01b1c111475cec67b
 
     </application>
 

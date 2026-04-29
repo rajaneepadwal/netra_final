@@ -39,7 +39,11 @@ public class ObjectDetector {
     private static final int INPUT_SIZE = 320;
     private static final int OUTPUT_ROWS = 84;
     private static final int OUTPUT_COLS = 2100;
+<<<<<<< HEAD
     private static final float CONFIDENCE_THRESHOLD = 0.45f;
+=======
+    private static final float CONFIDENCE_THRESHOLD = 0.40f;
+>>>>>>> af403b85be5c64f0240c67c01b1c111475cec67b
 
     private final ImageProcessor imageProcessor;
 

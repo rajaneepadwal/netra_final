@@ -1,18 +1,14 @@
 package com.example.level_1_app
 
 import android.Manifest
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.RectF
 import android.os.Bundle
 import android.util.Size
-import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
-import androidx.camera.core.CameraSelector
-import androidx.camera.core.ImageAnalysis
-import androidx.camera.core.Preview
+import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.core.app.ActivityCompat
@@ -28,7 +24,11 @@ class Person_Following_Activity : AppCompatActivity() {
     private lateinit var objectDetector: ObjectDetector
     private lateinit var bluetoothConnection: BluetoothConnectionManager
     private val cameraExecutor: ExecutorService = Executors.newSingleThreadExecutor()
+<<<<<<< HEAD
     private lateinit var btnBack: View
+=======
+
+>>>>>>> af403b85be5c64f0240c67c01b1c111475cec67b
     @Volatile private var isProcessing = false
     private var lastCommand = "S*"
     private var missedFrames = 0
@@ -41,17 +41,24 @@ class Person_Following_Activity : AppCompatActivity() {
         viewFinder = findViewById(R.id.viewFinder)
         spinner = findViewById(R.id.spinner)
         overlayView = findViewById(R.id.overlayView)
+<<<<<<< HEAD
         btnBack = findViewById(R.id.btnBack)
+=======
+>>>>>>> af403b85be5c64f0240c67c01b1c111475cec67b
 
         val objects = arrayOf("Person", "Bottle", "Laptop", "Chair")
         spinner.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, objects)
 
         objectDetector = ObjectDetector(this)
         bluetoothConnection = BluetoothConnectionManager.getInstance()
+<<<<<<< HEAD
         btnBack.setOnClickListener {
             startActivity(Intent(this, MenuActivity::class.java))
             finish()
         }
+=======
+
+>>>>>>> af403b85be5c64f0240c67c01b1c111475cec67b
         if (allPermissionsGranted()) startCamera()
         else ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), 101)
     }
@@ -135,9 +142,17 @@ class Person_Following_Activity : AppCompatActivity() {
     }
 
     private fun handleLostTarget() {
+<<<<<<< HEAD
         overlayView.setResults(emptyList(), 1f, 1f, 270)
         missedFrames++
 
+=======
+        // Maintain a default rotation (usually 90) even when clearing results
+        overlayView.setResults(emptyList(), 1f, 1f, 270)
+        missedFrames++
+
+        // Anti-Stutter: Continue last command for 5 frames before stopping
+>>>>>>> af403b85be5c64f0240c67c01b1c111475cec67b
         if (missedFrames > MAX_ALLOWED_MISSES && lastCommand != "S*") {
             sendCommand("S*")
             lastCommand = "S*"

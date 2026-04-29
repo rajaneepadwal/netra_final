@@ -51,6 +51,12 @@ public class MenuActivity extends AppCompatActivity {
         cardColor.setOnClickListener(v ->
                 startActivity(new Intent(this, ColorActivity.class)));
 
+<<<<<<< HEAD
+=======
+//        cardChatbot.setOnClickListener(v ->
+//                startActivity(new Intent(this, Chatbot_Activity.class)));
+
+>>>>>>> af403b85be5c64f0240c67c01b1c111475cec67b
         cardGesture.setOnClickListener(v -> {
             startActivity(new Intent(this, GestureActivity.class));
         });
